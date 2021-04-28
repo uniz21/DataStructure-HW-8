@@ -8,8 +8,6 @@
  *
  */
 
-
-
 #include<stdio.h>
 #include<stdlib.h>
 /* 필요한 헤더파일 추가 */
@@ -34,13 +32,13 @@ int deleteNode(listNode* h, int key);
 
 void printList(listNode* h);
 
-
-
 int main()
 {
 	char command;
 	int key;
 	listNode* headnode=NULL;
+
+	printf("[----- [Yoon YongJin]  [2016039040] -----]\n");
 
 	do{
 		printf("----------------------------------------------------------------\n");
@@ -105,7 +103,6 @@ int main()
 	return 1;
 }
 
-
 int initialize(listNode** h) {
 
 	/* headNode가 NULL이 아니면, freeNode를 호출하여 할당된 메모리 모두 해제 */
@@ -140,8 +137,6 @@ int freeList(listNode* h){
 	
 	return 0;
 }
-
-
 
 void printList(listNode* h) {
 	int i = 0;
@@ -178,8 +173,6 @@ void printList(listNode* h) {
 	}
 
 }
-
-
 
 /**
  * list에 key에 대한 노드하나를 추가
@@ -219,16 +212,48 @@ int insertLast(listNode* h, int key) {
 	return 0;
 }
 
-
 /**
  * list의 마지막 노드 삭제
  */
 int deleteLast(listNode* h) {
 
+	if (h == NULL) {
+		printf("Initialize First\n");
+		return 0;
+	}
 
-	return 1;
+	if (h->rlink == h)
+	{
+		printf("There is no Node to Delete\n");
+		return 0;
+	}
+
+	listNode* p;
+	listNode* prev;
+
+	p = h->rlink;
+
+	while (p != NULL && p!=h) {
+
+		if (p->llink == h && p->rlink == h)
+		{
+			deleteFirst(h);
+			return 0;
+		}
+
+		else if (p->rlink == h)
+		{
+			prev = p->llink;
+			prev->rlink = h;
+			h->llink = prev;
+			free(p);
+			return 0;
+		}
+		p = p->rlink;
+	}
+
+	return 0;
 }
-
 
 /**
  * list 처음에 key에 대한 노드하나를 추가
@@ -257,11 +282,38 @@ int insertFirst(listNode* h, int key) {
  */
 int deleteFirst(listNode* h) {
 
+	if (h == NULL) {
+		printf("Initialize First\n");
+		return 0;
+	}
 
-	return 1;
+	if (h->rlink == h)
+	{
+		printf("There is no Node to Delete\n");
+		return 0;
+	}
 
+	listNode* p;
+
+	p = h->rlink;
+
+	if (p->rlink == h)
+	{
+		h->rlink = h;
+		h->llink = h;
+	}
+
+	else
+	{
+		listNode* secondnode;
+		secondnode = p->rlink;
+		secondnode->llink = h;
+		h->rlink = secondnode;
+	}
+
+	free(p);
+	return 0;
 }
-
 
 /**
  * 리스트의 링크를 역순으로 재 배치
@@ -290,7 +342,7 @@ int invertList(listNode* h) {
 
 	while (p != NULL && p != h)
 	{
-		if (p->rlink == NULL) lastnode = p;
+		if (p->rlink == h) lastnode = p;
 
 		nextnode = p->rlink;
 		p->rlink = p->llink;
@@ -303,8 +355,6 @@ int invertList(listNode* h) {
 
 	return 0;
 }
-
-
 
 /**
  *  리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 
@@ -357,13 +407,51 @@ int insertNode(listNode* h, int key) {
 	return 0;
 }
 
-
 /**
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(listNode* h, int key) {
 
+	if (h == NULL) {
+		printf("Initialize First\n");
+		return 0;
+	}
+
+	if (h->rlink == h)
+	{
+		printf("There is no Node to Delete\n");
+		return 0;
+	}
+
+	listNode* p;
+
+	p = h->rlink;
+
+	while (p != NULL && p != h) {
+
+		if (p == h->rlink && p->key == key)
+		{
+			deleteFirst(h);
+			return 0;
+		}
+
+		else if (p->rlink == h && p->key == key)
+		{
+			deleteLast(h);
+			return 0;
+		}
+
+		else if (p->key == key)
+		{
+			p->llink->rlink = p->rlink;
+			p->rlink->llink = p->llink;
+			free(p);
+			return 0;
+		}
+		p = p->rlink;
+	}
+
+	printf("There is no node corresponding to the key value.\n");
+
 	return 0;
 }
-
-
