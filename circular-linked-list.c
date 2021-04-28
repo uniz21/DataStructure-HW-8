@@ -128,13 +128,14 @@ int freeList(listNode* h){
 	{
 		//if (p->llink != h) prev = p->llink;
 		//else 
+		/* 현재 탐색중인 노드를 기억 */
 		prev = p;
 		p = p->rlink;
 
 		if (prev != h) free(prev);
 	}
 	free(h);
-	
+
 	return 0;
 }
 
@@ -178,7 +179,7 @@ void printList(listNode* h) {
  * list에 key에 대한 노드하나를 추가
  */
 int insertLast(listNode* h, int key) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -187,6 +188,7 @@ int insertLast(listNode* h, int key) {
 	listNode* p;
 	listNode* lastnode = (listNode*)malloc(sizeof(listNode));
 
+	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
 	if (h->rlink == h)
 	{
 		insertFirst(h, key);
@@ -196,12 +198,14 @@ int insertLast(listNode* h, int key) {
 	p = h->rlink;
 
 	while (p != NULL && p != h) {
+		/* 마지막 노드를 탐색 */
 		if (p->rlink == h)
 		{
 			lastnode->key = key;
+			/* 새로운 노드를 리스트 끝에 삽입 */
 			lastnode->llink = p;
-			p->rlink = lastnode;
 			lastnode->rlink = h;
+			p->rlink = lastnode;
 			h->llink = lastnode;
 
 			break;
@@ -216,7 +220,7 @@ int insertLast(listNode* h, int key) {
  * list의 마지막 노드 삭제
  */
 int deleteLast(listNode* h) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -234,13 +238,13 @@ int deleteLast(listNode* h) {
 	p = h->rlink;
 
 	while (p != NULL && p!=h) {
-
+		/* 리스트에 노드가 하나뿐인 경우 */
 		if (p->llink == h && p->rlink == h)
 		{
 			deleteFirst(h);
 			return 0;
 		}
-
+		/* 마지막 노드 삭제 */
 		else if (p->rlink == h)
 		{
 			prev = p->llink;
@@ -259,7 +263,7 @@ int deleteLast(listNode* h) {
  * list 처음에 key에 대한 노드하나를 추가
  */
 int insertFirst(listNode* h, int key) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -271,7 +275,11 @@ int insertFirst(listNode* h, int key) {
 	firstnode->llink = h;
 	firstnode->rlink = h->rlink;
 
-	if (h->rlink != NULL) h->rlink->llink = firstnode;
+	/* 
+	*  h->rlink->llink=firstnode; 는 첫 노드 생성시에는 h->llink=firstnode로 작동 
+	*  이후에는 기존 첫 노드의 왼쪽에 새로운 노드 삽입으로 작동 
+	*/
+	h->rlink->llink = firstnode;
 	h->rlink = firstnode;
 
 	return 0;
@@ -281,7 +289,7 @@ int insertFirst(listNode* h, int key) {
  * list의 첫번째 노드 삭제
  */
 int deleteFirst(listNode* h) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -297,12 +305,13 @@ int deleteFirst(listNode* h) {
 
 	p = h->rlink;
 
+	/* 노드가 하나뿐인 리스트의 경우 */
 	if (p->rlink == h)
 	{
 		h->rlink = h;
 		h->llink = h;
 	}
-
+	/* 첫번째 노드 삭제 */
 	else
 	{
 		listNode* secondnode;
@@ -319,7 +328,7 @@ int deleteFirst(listNode* h) {
  * 리스트의 링크를 역순으로 재 배치
  */
 int invertList(listNode* h) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -340,6 +349,7 @@ int invertList(listNode* h) {
 
 	p = h->rlink;
 
+	/* doubly-linked-list와 동일한 처리 */
 	while (p != NULL && p != h)
 	{
 		if (p->rlink == h) lastnode = p;
@@ -360,7 +370,7 @@ int invertList(listNode* h) {
  *  리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 
  **/
 int insertNode(listNode* h, int key) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -369,7 +379,7 @@ int insertNode(listNode* h, int key) {
 	listNode* p;
 	listNode* node2insert = (listNode*)malloc(sizeof(listNode));
 
-
+	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
 	if (h->rlink == h)
 	{
 		insertFirst(h, key);
@@ -379,13 +389,13 @@ int insertNode(listNode* h, int key) {
 	p = h->rlink;
 
 	while (p != NULL && p != h) {
-
+		/* 새로운 노드의 삽입 위치가 리스트의 첫 노드 앞인 경우 */
 		if (p == h->rlink && p->key > key)
 		{
 			insertFirst(h, key);
 			return 0;
 		}
-
+		/* 현재 탐색중인 노드의 키값이 입력받은 키값보다 큰 경우 */
 		else if (p->key > key)
 		{
 			node2insert->key = key;
@@ -401,7 +411,7 @@ int insertNode(listNode* h, int key) {
 		p = p->rlink;
 	}
 
-
+	/* 입력받은 키 값보다 큰 키 값을 갖는 노드가 없는 경우 마지막 노드로 새 노드 추가 */
 	insertLast(h, key);
 
 	return 0;
@@ -411,7 +421,7 @@ int insertNode(listNode* h, int key) {
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(listNode* h, int key) {
-
+	/* 전처리 */
 	if (h == NULL) {
 		printf("Initialize First\n");
 		return 0;
@@ -428,19 +438,19 @@ int deleteNode(listNode* h, int key) {
 	p = h->rlink;
 
 	while (p != NULL && p != h) {
-
+		/* 삭제할 노드가 첫 번째 노드인 경우 */
 		if (p == h->rlink && p->key == key)
 		{
 			deleteFirst(h);
 			return 0;
 		}
-
+		/* 삭제할 노드가 마지막 노드인 경우 */
 		else if (p->rlink == h && p->key == key)
 		{
 			deleteLast(h);
 			return 0;
 		}
-
+		/* 리스트에서 처음으로 마주치는 키 값이 일치하는 노드를 삭제 */
 		else if (p->key == key)
 		{
 			p->llink->rlink = p->rlink;
@@ -450,7 +460,7 @@ int deleteNode(listNode* h, int key) {
 		}
 		p = p->rlink;
 	}
-
+	/* 모든 노드 탐색이 끝날 때까지 삭제할 노드를 찾지 못했다면 */
 	printf("There is no node corresponding to the key value.\n");
 
 	return 0;
